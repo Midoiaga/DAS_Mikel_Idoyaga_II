@@ -7,6 +7,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +57,9 @@ public class RegisterActivity extends AppCompatActivity {
                                                     .build();
                                             OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(InsertWorker.class).setInputData(datos).build();
                                             WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+                                            finish();
+                                            Intent i = new Intent (getApplicationContext(), ImagenActivity.class);
+                                            startActivity(i);
                                         }else{
                                             Toast toast= Toast.makeText(getApplicationContext(),"Usuario existente",Toast.LENGTH_SHORT);
                                             toast.show();
@@ -79,7 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    public void hacerToast(String s){
+    private void hacerToast(String s){
         //Metodo de apoyo para hacer notificaciones del tipo toast
         Toast toast= Toast.makeText(getApplicationContext(),s,Toast.LENGTH_SHORT);
         toast.show();

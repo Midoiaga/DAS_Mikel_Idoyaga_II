@@ -54,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:backgroundTint="#191414"
+        android:onClick="onEntrar"
         android:text="Entrar"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"

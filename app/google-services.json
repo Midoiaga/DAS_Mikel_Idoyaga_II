@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "32864820844",
+    "project_id": "prueba-f7867",
+    "storage_bucket": "prueba-f7867.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32864820844:android:ce90a359d2079f2dbcc249",
+        "android_client_info": {
+          "package_name": "com.example.das_mikel_idoyaga_ii"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "32864820844-k4mb8vu390jkc4p9jhkql1mrjkg648b3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUQ-7yBdPMipW4iobMsr_UlfO0fKJG0As"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "32864820844-k4mb8vu390jkc4p9jhkql1mrjkg648b3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
