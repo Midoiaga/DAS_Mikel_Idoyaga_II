@@ -73,6 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                             if(!workInfo.getOutputData().getString("datos").equalsIgnoreCase("[]")){
                                 FCM();
                                 Intent i = new Intent (getApplicationContext(), ImagenActivity.class);
+                                i.putExtra("nombre",nombre);
                                 startActivity(i);
                             }else{
                                 Toast toast= Toast.makeText(getApplicationContext(),"Usuario o contraseña incorrecta",Toast.LENGTH_SHORT);

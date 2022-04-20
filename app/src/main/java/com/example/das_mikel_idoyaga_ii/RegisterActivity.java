@@ -59,6 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
                                             finish();
                                             Intent i = new Intent (getApplicationContext(), ImagenActivity.class);
+                                            i.putExtra("nombre",nombre);
                                             startActivity(i);
                                         }else{
                                             Toast toast= Toast.makeText(getApplicationContext(),"Usuario existente",Toast.LENGTH_SHORT);
