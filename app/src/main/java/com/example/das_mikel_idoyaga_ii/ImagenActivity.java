@@ -137,5 +137,10 @@ public class ImagenActivity extends AppCompatActivity {
         }else{
             hacerToast("Necesitas escribir un nombre de un usuario");
         }
+
+    }
+    public void onMapa(View view){
+        Intent i = new Intent (getApplicationContext(), ActividadMapa.class);
+        startActivity(i);
     }
 }

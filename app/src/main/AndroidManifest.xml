@@ -2,12 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.das_mikel_idoyaga_ii">
-    <uses-feature android:name="android.hardware.camera2.full" android:required="true"/>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
 
+    <uses-feature
+        android:name="android.hardware.camera2.full"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <application
         android:allowBackup="true"
@@ -18,8 +22,12 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ActividadMapa"
+            android:exported="false" />
+        <activity
             android:name=".ImagenActivity"
             android:exported="false" />
+
         <service
             android:name=".ServicioFirebase"
             android:enabled="true"
@@ -28,6 +36,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
@@ -40,15 +49,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
-            android:authorities="com.example.das_mikel_idoyaga_ii.provider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.das_mikel_idoyaga_ii.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/paths"/>
+                android:resource="@xml/paths" />
         </provider>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBYf4CzoY9n96qB34eYGtmA_Jk3iPS5ZaQ" />
     </application>
 
 </manifest>
