@@ -27,6 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -38,7 +39,7 @@ public class DownloadWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        String direccion = "http://ec2-18-132-60-229.eu-west-2.compute.amazonaws.com/midoyaga002/WEB/bajarfoto.php";
+        String direccion = "http://ec2-52-56-170-196.eu-west-2.compute.amazonaws.com/midoyaga002/WEB/bajarfoto.php";
         HttpURLConnection urlConnection;
         String nombre = getInputData().getString("nombre");
         Log.d("d", nombre);
@@ -58,25 +59,35 @@ public class DownloadWorker extends Worker {
             int statusCode = urlConnection.getResponseCode();
             Log.d("aaa", String.valueOf(statusCode));
             if (statusCode == 200) {
-                BufferedInputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                String line, result = "";
-                while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
-                }
-//                Log.d("res",result);
-//                Bitmap elBitmap = BitmapFactory.decodeStream(urlConnection.getInputStream());
-//                Log.d("bi",elBitmap.toString());
-//                Data resultados = new Data.Builder()
-//                        .putString("datos", result)
-//                        .build();
-                File path = this.getApplicationContext().getExternalFilesDir("/data/data/com.example.das_mikel_idoyaga_ii/files");
-                File f = new File(path.getAbsolutePath(), "foto.txt");
-                Log.i("FICH","PATH:"+path.getAbsolutePath());
-                OutputStreamWriter ficheroexterno = new OutputStreamWriter(new FileOutputStream(f));
-                ficheroexterno.write(result);
-                ficheroexterno.close();
 
+                Scanner s = new Scanner(urlConnection.getInputStream()).useDelimiter("\\A");
+                String result = s.hasNext() ? s.next() : "";
+
+//                BufferedInputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
+//                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+//                String line, result = "";
+//                while ((line = bufferedReader.readLine()) != null) {
+//                    result += line;
+//                }
+                Log.d("res",result);
+                OutputStreamWriter fichero = new OutputStreamWriter(getApplicationContext().openFileOutput("foto.txt",
+                        Context.MODE_PRIVATE));
+                fichero.write(result);
+                fichero.close();
+
+////                Log.d("res",result);
+////                Bitmap elBitmap = BitmapFactory.decodeStream(urlConnection.getInputStream());
+////                Log.d("bi",elBitmap.toString());
+////                Data resultados = new Data.Builder()
+////                        .putString("datos", result)
+////                        .build();
+//                File path = this.getApplicationContext().getExternalFilesDir("/data/data/com.example.das_mikel_idoyaga_ii/files");
+//                File f = new File(path.getAbsolutePath(), "foto.txt");
+//                Log.i("FICH","PATH:"+path.getAbsolutePath());
+//                OutputStreamWriter ficheroexterno = new OutputStreamWriter(new FileOutputStream(f));
+//                ficheroexterno.write(result);
+//                ficheroexterno.close();
+//
                 return Result.success();
             }
 

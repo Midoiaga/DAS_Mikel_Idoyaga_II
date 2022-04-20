@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 
@@ -37,23 +38,39 @@ public class UploadWorker extends Worker {
     @Override
     public Result doWork() {
         String fotoen64 ="";
-        String direccion = "http://ec2-18-132-60-229.eu-west-2.compute.amazonaws.com/midoyaga002/WEB/subirfoto.php";
+        String direccion = "http://ec2-52-56-170-196.eu-west-2.compute.amazonaws.com/midoyaga002/WEB/subirfoto.php";
         HttpURLConnection urlConnection;
         String nombre = getInputData().getString("nombre");
         String imagen = getInputData().getString("foto");
         Log.d("d",imagen);
-        File imgFile = new File(imagen);
-        Log.d("d",nombre);
-        if(imgFile.exists()){
-            Log.d("d","aqui");
-
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            Log.d("d",imgFile.getAbsolutePath());
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            myBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] fototransformada = stream.toByteArray();
-            fotoen64 = Base64.encodeToString(fototransformada,Base64.DEFAULT);
+        Uri uriImagen = Uri.parse(imagen);
+        Bitmap bitmapFoto = null;
+        try {
+            bitmapFoto = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), uriImagen);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        int anchoDestino = 100;
+        int altoDestino = 100;
+        int anchoImagen = bitmapFoto.getWidth();
+        int altoImagen = bitmapFoto.getHeight();
+        float ratioImagen = (float) anchoImagen / (float) altoImagen;
+        float ratioDestino = (float) anchoDestino / (float) altoDestino;
+        int anchoFinal = anchoDestino;
+        int altoFinal = altoDestino;
+        if (ratioDestino > ratioImagen) {
+            anchoFinal = (int) ((float)altoDestino * ratioImagen);
+        } else {
+            altoFinal = (int) ((float)anchoDestino / ratioImagen);
+        }
+        Bitmap bitmapredimensionado = Bitmap.createScaledBitmap(bitmapFoto,anchoFinal,altoFinal,true);
+        Log.d("d",nombre);
+        Log.d("d","aqui");
+        //Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmapredimensionado.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] fototransformada = stream.toByteArray();
+        fotoen64 = Base64.encodeToString(fototransformada,Base64.NO_WRAP);
         String parametros = "nombre="+nombre+"&imagen="+fotoen64;
 
         try {

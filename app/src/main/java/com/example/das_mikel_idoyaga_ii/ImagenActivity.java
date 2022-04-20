@@ -23,10 +23,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class ImagenActivity extends AppCompatActivity {
 
@@ -50,7 +53,7 @@ public class ImagenActivity extends AppCompatActivity {
         File directorio=this.getFilesDir();
         fichImg = null;
         try {
-            fichImg = File.createTempFile(nombrefich, ".png",directorio);
+            fichImg = File.createTempFile(nombrefich, ".jpg",directorio);
             uriimagen = FileProvider.getUriForFile(this, "com.example.das_mikel_idoyaga_ii.provider", fichImg);
             Log.d("aaaa",fichImg.toString());
         } catch (IOException e) {
@@ -81,7 +84,7 @@ public class ImagenActivity extends AppCompatActivity {
 //        Log.d("d",fichImg.toString());
         Data datos = new Data.Builder()
                 .putString("nombre",nombre)
-                .putString("foto",fichImg.toString())
+                .putString("foto",uriimagen.toString())
                 .build();
         OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(UploadWorker.class).setInputData(datos).build();
         WorkManager.getInstance(this).enqueue(otwr);
@@ -104,11 +107,28 @@ public class ImagenActivity extends AppCompatActivity {
                         @Override
                         public void onChanged(WorkInfo workInfo) {
                             if (workInfo != null && workInfo.getState().isFinished()) {
-                                String foto64 = workInfo.getOutputData().getString("datos");
-                                byte[] bytes = Base64.decode(foto64, Base64.DEFAULT);
-                                Bitmap elBitMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                ImageView img  = findViewById(R.id.img);
-                                img.setImageBitmap(elBitMap);
+                                try {
+                                    BufferedReader ficherointerno = new BufferedReader(new InputStreamReader(
+                                            openFileInput("foto.txt")));
+                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                                        //String  Linea =  ficherointerno.lines().collect(Collectors.joining());
+                                        //String Linea = ficherointerno.readLine();
+                                        String Linea = "";
+                                        while (ficherointerno.readLine()!=null){
+                                            Linea+= ficherointerno.readLine();
+                                        }
+                                        Log.d("line",Linea);
+                                        ficherointerno.close();
+                                        byte[] bytes = Base64.decode(Linea, Base64.DEFAULT);
+                                        Bitmap elBitMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                        ImageView img  = findViewById(R.id.img);
+                                        img.setImageBitmap(elBitMap);
+                                    }
+
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
 
                             }
                         }
