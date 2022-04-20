@@ -111,13 +111,13 @@ public class ImagenActivity extends AppCompatActivity {
                                     BufferedReader ficherointerno = new BufferedReader(new InputStreamReader(
                                             openFileInput("foto.txt")));
                                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                                        //String  Linea =  ficherointerno.lines().collect(Collectors.joining());
+                                        String  Linea =  ficherointerno.lines().collect(Collectors.joining());
                                         //String Linea = ficherointerno.readLine();
-                                        String Linea = "";
-                                        while (ficherointerno.readLine()!=null){
-                                            Linea+= ficherointerno.readLine();
-                                        }
-                                        Log.d("line",Linea);
+//                                        String Linea = "";
+//                                        while (ficherointerno.readLine()!=null){
+//                                            Linea+= ficherointerno.readLine();
+//                                        }
+//                                        Log.d("line",Linea);
                                         ficherointerno.close();
                                         byte[] bytes = Base64.decode(Linea, Base64.DEFAULT);
                                         Bitmap elBitMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);

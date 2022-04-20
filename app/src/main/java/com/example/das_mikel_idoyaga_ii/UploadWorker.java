@@ -16,6 +16,7 @@ import androidx.work.WorkerParameters;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -50,8 +51,8 @@ public class UploadWorker extends Worker {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int anchoDestino = 100;
-        int altoDestino = 100;
+        int anchoDestino = 200;
+        int altoDestino = 200;
         int anchoImagen = bitmapFoto.getWidth();
         int altoImagen = bitmapFoto.getHeight();
         float ratioImagen = (float) anchoImagen / (float) altoImagen;
@@ -70,19 +71,22 @@ public class UploadWorker extends Worker {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmapredimensionado.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] fototransformada = stream.toByteArray();
-        fotoen64 = Base64.encodeToString(fototransformada,Base64.NO_WRAP);
-        String parametros = "nombre="+nombre+"&imagen="+fotoen64;
+        fotoen64 = Base64.encodeToString(fototransformada,Base64.DEFAULT);
+        //String parametros = "nombre="+nombre+"&imagen="+fotoen64;
 
         try {
+            JSONObject parametrosJSON = new JSONObject();
+            parametrosJSON.put("param1", fotoen64);
+            parametrosJSON.put("param2", nombre);
             URL destino = new URL(direccion);
             urlConnection = (HttpURLConnection) destino.openConnection();
             urlConnection.setConnectTimeout(5000);
             urlConnection.setReadTimeout(5000);
             urlConnection.setRequestMethod("POST");
             urlConnection.setDoOutput(true);
-            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setRequestProperty("Content-Type","application/json");
             PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
-            out.print(parametros);
+            out.print(parametrosJSON.toString());
             out.close();
             int statusCode = urlConnection.getResponseCode();
             Log.d("aaa", String.valueOf(statusCode));
@@ -93,6 +97,8 @@ public class UploadWorker extends Worker {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
