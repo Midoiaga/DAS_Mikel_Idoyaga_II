@@ -22,6 +22,9 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".AlarmaActivity"
+            android:exported="false" />
+        <activity
             android:name=".ActividadMapa"
             android:exported="false" />
         <activity

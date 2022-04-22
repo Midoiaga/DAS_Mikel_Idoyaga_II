@@ -8,12 +8,16 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -36,6 +40,7 @@ public class ImagenActivity extends AppCompatActivity {
     private String nombre;
     private Uri uriimagen;
     private File fichImg = null;
+    //private boolean alarm = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,16 @@ public class ImagenActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             nombre = (String) extras.get("nombre");
+//            if (extras.get("alarm") !=null){
+//                alarm = (boolean) extras.get("alarm");
+//            }
         }
+        Log.d("he","entrado");
+        Intent i= new Intent(this,AlarmaActivity.class);
+        i.putExtra("nombre",nombre);
+        PendingIntent i2= PendingIntent.getActivity(this,0,i, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager gestor= (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        gestor.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime(),10000,i2);
     }
 
     public void onFoto(View view){
