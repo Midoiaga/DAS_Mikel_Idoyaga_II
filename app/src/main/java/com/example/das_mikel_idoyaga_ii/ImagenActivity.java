@@ -40,7 +40,6 @@ public class ImagenActivity extends AppCompatActivity {
     private String nombre;
     private Uri uriimagen;
     private File fichImg = null;
-    //private boolean alarm = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +48,12 @@ public class ImagenActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             nombre = (String) extras.get("nombre");
-//            if (extras.get("alarm") !=null){
-//                alarm = (boolean) extras.get("alarm");
-//            }
+
+        }
+        if (savedInstanceState!= null)
+        {
+            nombre = savedInstanceState.getString("nombre");
+
         }
         Log.d("he","entrado");
         Intent i= new Intent(this,AlarmaActivity.class);
@@ -59,6 +61,12 @@ public class ImagenActivity extends AppCompatActivity {
         PendingIntent i2= PendingIntent.getActivity(this,0,i, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager gestor= (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         gestor.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime(),10000,i2);
+    }
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        //Guardar el bundle para que no se pierdan los atributos necesarios para el desarrollo de la actividad.
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("nombre",nombre);
+
     }
 
     public void onFoto(View view){

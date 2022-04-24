@@ -63,39 +63,13 @@
         android:id="@+id/btnRegistrar"
         android:layout_width="105dp"
         android:layout_height="48dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="36dp"
         android:background="@color/black"
         android:onClick="onRegistrar"
         android:text="Registrarse"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etLatitud" />
-
-    <EditText
-        android:id="@+id/etLatitud"
-        android:layout_width="158dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="48dp"
-        android:ems="10"
-        android:hint="Latitud"
-        android:inputType="numberDecimal"
-        app:layout_constraintBottom_toBottomOf="@+id/etLongitud"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etUsuarioRegis"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <EditText
-        android:id="@+id/etLongitud"
-        android:layout_width="158dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Longitud"
-        android:inputType="numberDecimal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.23"
-        app:layout_constraintStart_toEndOf="@+id/etLatitud"
         app:layout_constraintTop_toBottomOf="@+id/epContraseñaConfir" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
