@@ -5,7 +5,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -17,11 +16,10 @@ public class ServicioFirebase extends FirebaseMessagingService {
         super.onNewToken(s);
     }
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        //Método que si recibe una notificacion por firebase hara que se ejecute en tu dispositivo
         if (remoteMessage.getData().size() > 0) {
-            Log.d("noti","mensaje");
         }
         if (remoteMessage.getNotification() != null) {
-            Log.d("noti","estoy");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationManager elmanager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
                 NotificationChannel canalservicio = new NotificationChannel("IdCanal", "NombreCanal",NotificationManager.IMPORTANCE_LOW);

@@ -28,6 +28,8 @@ public class ExistWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        //Método que hara una llamada al php que se encarga de devolvernos un usuario con el nombre y contraseña que le hayamos
+        //escrito anteriormente
         String direccion = "http://ec2-52-56-170-196.eu-west-2.compute.amazonaws.com/midoyaga002/WEB/existeusuario.php";
         HttpURLConnection urlConnection;
         String nombre = getInputData().getString("nombre");
@@ -46,6 +48,7 @@ public class ExistWorker extends Worker {
             out.close();
             int statusCode = urlConnection.getResponseCode();
             if (statusCode == 200) {
+                //Leemos la respuesta y mandamos si existe el usuario indicado
                 BufferedInputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
                 String line, result = "";

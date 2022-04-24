@@ -2,22 +2,14 @@ package com.example.das_mikel_idoyaga_ii;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
-import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 
 public class InsertWorker extends Worker {
     public InsertWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
@@ -27,6 +19,7 @@ public class InsertWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        //Método que llamara al php encargado de insertar un nuevo usuario con los parametros de nombre, contraseña, latitud y longitud
         String direccion = "http://ec2-52-56-170-196.eu-west-2.compute.amazonaws.com/midoyaga002/WEB/insertusuarios.php";
         HttpURLConnection urlConnection;
         String nombre = getInputData().getString("nombre");

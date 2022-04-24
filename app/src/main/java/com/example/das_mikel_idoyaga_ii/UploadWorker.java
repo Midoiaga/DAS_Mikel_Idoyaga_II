@@ -3,32 +3,27 @@ package com.example.das_mikel_idoyaga_ii;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
+
 
 import androidx.annotation.NonNull;
-import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import org.json.JSONArray;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+
 
 public class UploadWorker extends Worker {
     public UploadWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
@@ -38,12 +33,13 @@ public class UploadWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        //Método que hara una llamada al php para subir una foto de un usuario a la base de datos
+
         String fotoen64 ="";
         String direccion = "http://ec2-52-56-170-196.eu-west-2.compute.amazonaws.com/midoyaga002/WEB/subirfoto.php";
         HttpURLConnection urlConnection;
         String nombre = getInputData().getString("nombre");
         String imagen = getInputData().getString("foto");
-        Log.d("d",imagen);
         Uri uriImagen = Uri.parse(imagen);
         Bitmap bitmapFoto = null;
         try {
@@ -51,6 +47,7 @@ public class UploadWorker extends Worker {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //Redimensionar la imagen para que no ocupe tanto espacio aunque se pierda un poco de calidad
         int anchoDestino = 200;
         int altoDestino = 200;
         int anchoImagen = bitmapFoto.getWidth();
@@ -64,15 +61,12 @@ public class UploadWorker extends Worker {
         } else {
             altoFinal = (int) ((float)anchoDestino / ratioImagen);
         }
+        //Codificarlo para guardar la foto en formato String
         Bitmap bitmapredimensionado = Bitmap.createScaledBitmap(bitmapFoto,anchoFinal,altoFinal,true);
-        Log.d("d",nombre);
-        Log.d("d","aqui");
-        //Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmapredimensionado.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] fototransformada = stream.toByteArray();
         fotoen64 = Base64.encodeToString(fototransformada,Base64.DEFAULT);
-        //String parametros = "nombre="+nombre+"&imagen="+fotoen64;
 
         try {
             JSONObject parametrosJSON = new JSONObject();
@@ -89,7 +83,6 @@ public class UploadWorker extends Worker {
             out.print(parametrosJSON.toString());
             out.close();
             int statusCode = urlConnection.getResponseCode();
-            Log.d("aaa", String.valueOf(statusCode));
             if (statusCode == 200) {
                 return Result.success();
             }

@@ -14,25 +14,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Locale;
+
 import java.util.stream.Collectors;
 
 public class ImagenActivity extends AppCompatActivity {
@@ -43,6 +42,8 @@ public class ImagenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Al crear la actividad se vincula con  el layout que contiene lo relacionado con las fotos e imagenes.
+        //Se encarga de mantener el nombre del usuario
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_imagen);
         Bundle extras = getIntent().getExtras();
@@ -55,7 +56,7 @@ public class ImagenActivity extends AppCompatActivity {
             nombre = savedInstanceState.getString("nombre");
 
         }
-        Log.d("he","entrado");
+        //Inicializamos la alarma para que salte la actividad más o menos cada 10 segundos
         Intent i= new Intent(this,AlarmaActivity.class);
         i.putExtra("nombre",nombre);
         PendingIntent i2= PendingIntent.getActivity(this,0,i, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -70,40 +71,33 @@ public class ImagenActivity extends AppCompatActivity {
     }
 
     public void onFoto(View view){
-
+        //Método que al pulsar el botón foto nos abrira la camara de fotos y una vez hecha la foto lo guardara en el dispositivo
         String nombrefich = nombre;
         File directorio=this.getFilesDir();
         fichImg = null;
         try {
             fichImg = File.createTempFile(nombrefich, ".jpg",directorio);
             uriimagen = FileProvider.getUriForFile(this, "com.example.das_mikel_idoyaga_ii.provider", fichImg);
-            Log.d("aaaa",fichImg.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d("aaaa",uriimagen.toString());
         Intent elIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         elIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriimagen);
         startActivityForResult(elIntent, 1);
 
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //Método que una vez hecha la foto pondra la foto en pantalla y llamara al metodo para enviar la foto
         super.onActivityResult(requestCode, resultCode, data);
         ImageView image = findViewById(R.id.img);
         if (requestCode == 1 && resultCode == RESULT_OK) {
             image.setImageURI(uriimagen);
-            //Bundle extras = data.getExtras();
-            //Bitmap laminiatura = (Bitmap) extras.get("data");
             enviarFoto();
         }
     }
-    public void enviarFoto(){
 
-//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//        foto.compress(Bitmap.CompressFormat.PNG, 50, stream);
-//        byte[] fototransformada = stream.toByteArray();
-//        String fotoen64 = Base64.encodeToString(fototransformada,Base64.DEFAULT);
-//        Log.d("d",fichImg.toString());
+    public void enviarFoto(){
+        //Método encargado de llamar al worker para subir la foto añadiendole el nombre del propietario de la foto y la ubicación de la foto en el dospositivo
         Data datos = new Data.Builder()
                 .putString("nombre",nombre)
                 .putString("foto",uriimagen.toString())
@@ -111,12 +105,15 @@ public class ImagenActivity extends AppCompatActivity {
         OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(UploadWorker.class).setInputData(datos).build();
         WorkManager.getInstance(this).enqueue(otwr);
     }
+
     private void hacerToast(String s){
         //Metodo de apoyo para hacer notificaciones del tipo toast
         Toast toast= Toast.makeText(getApplicationContext(),s,Toast.LENGTH_SHORT);
         toast.show();
     }
+
     public void onBuscar(View view){
+        //Método encargado en llamar al worker para descargar la foto en base al nombre proporcionado y una vez recibida se proyectara en la pantalla
         EditText etNombreF = findViewById(R.id.etNombreF);
         String nombreF = etNombreF.getText().toString();
         if(!nombreF.equalsIgnoreCase("")) {
@@ -130,16 +127,12 @@ public class ImagenActivity extends AppCompatActivity {
                         public void onChanged(WorkInfo workInfo) {
                             if (workInfo != null && workInfo.getState().isFinished()) {
                                 try {
+                                    //Leemos el fichero donde esta guardado el base64 de la foto que ha sido escrita por la clase DownloadWorker con anterioridad.
                                     BufferedReader ficherointerno = new BufferedReader(new InputStreamReader(
                                             openFileInput("foto.txt")));
                                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                                        //Decodificar la foto de string para poder proyectar la imagen por pantalla
                                         String  Linea =  ficherointerno.lines().collect(Collectors.joining());
-                                        //String Linea = ficherointerno.readLine();
-//                                        String Linea = "";
-//                                        while (ficherointerno.readLine()!=null){
-//                                            Linea+= ficherointerno.readLine();
-//                                        }
-//                                        Log.d("line",Linea);
                                         ficherointerno.close();
                                         byte[] bytes = Base64.decode(Linea, Base64.DEFAULT);
                                         Bitmap elBitMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -162,6 +155,7 @@ public class ImagenActivity extends AppCompatActivity {
 
     }
     public void onMapa(View view){
+        //Método que al pulsar el botón MAPA te abrira la actividad del mapa
         Intent i = new Intent (getApplicationContext(), ActividadMapa.class);
         startActivity(i);
     }

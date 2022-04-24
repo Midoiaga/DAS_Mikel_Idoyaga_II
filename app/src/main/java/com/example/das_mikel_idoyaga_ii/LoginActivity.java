@@ -28,11 +28,13 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Al crear la actividad se vincula con  el layout del login
         super.onCreate(savedInstanceState);
+        //Conseguir el token para la mensajeria PCM mediante firebase
         ActivityManager am= (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             if (am.isBackgroundRestricted()==true){
-                hacerToast("Norecibiras ningun mensaje FCM");
+                hacerToast("No recibiras ningun mensaje FCM");
             }
         }
         FirebaseMessaging.getInstance().getToken()
@@ -55,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
     }
     public void onEntrar(View view){
+        //Método que al pulsar el boton entrar y haber rellenado los campos correctamente te abrira la actividad ImagenActivity
         EditText etUsuario = findViewById(R.id.etUsuario);
         EditText epContraseña = findViewById(R.id.epContraseña);
         String nombre = etUsuario.getText().toString();
@@ -63,13 +66,13 @@ public class LoginActivity extends AppCompatActivity {
                 putString("nombre",nombre)
                 .putString("contraseña",contraseña)
                 .build();
+        //Llama al ExistWorker para comprobar si el usuario existe
         OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(ExistWorker.class).setInputData(datos).build();
         WorkManager.getInstance(this).getWorkInfoByIdLiveData(otwr.getId())
                 .observe(this, new Observer<WorkInfo>() {
                     @Override
                     public void onChanged(WorkInfo workInfo) {
                         if(workInfo != null && workInfo.getState().isFinished()){
-                            Log.d("da",workInfo.getOutputData().getString("datos"));
                             if(!workInfo.getOutputData().getString("datos").equalsIgnoreCase("[]")){
                                 FCM();
                                 Intent i = new Intent (getApplicationContext(), ImagenActivity.class);
@@ -90,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         toast.show();
     }
     public void FCM(){
+        //Llama a la clase MensajeFCM para conseguir el mensaje FCM
         EditText etUsuario = findViewById(R.id.etUsuario);
         String nombre = etUsuario.getText().toString();
         Data datos = new Data.Builder()
