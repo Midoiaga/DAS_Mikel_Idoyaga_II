@@ -45,8 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED) {
             Log.d("vaya","permiso");
             hacerToast("Necesitas otorgar el permiso de la ubicacion");
-            Button regis = findViewById(R.id.btnRegistrar);
-            regis.setEnabled(false);
+
 
         }
         else {
@@ -74,20 +73,23 @@ public class RegisterActivity extends AppCompatActivity {
                         hacerToast("Fallo con la ubicacion");
                     }
                 });
-            Button regis = findViewById(R.id.btnRegistrar);
-            regis.setEnabled(true);
+
         }
 
     }
     private boolean permisonCheck(){
+        boolean resultado;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED) {
             Log.d("vaya","permiso");
+            hacerToast("Necesitas otorgar el permiso de la ubicacion");
+            resultado = false;
         }
         else {
-            Log.d("vaya","nop");
-            hacerToast("Necesitas otorgar el permiso de la ubicacion");
+            Log.d("vaya","sip");
+            resultado = true;
+
         }
-        return true;
+        return resultado;
     }
     public void onRegistrar(View view){
 
@@ -98,10 +100,10 @@ public class RegisterActivity extends AppCompatActivity {
         String contraseña = etContraseña.getText().toString();
         String contraseñaConfir = etContraseñaConfir.getText().toString();
 
-
-            if(!nombre.equalsIgnoreCase("") && !contraseña.equalsIgnoreCase("")){
-                if(contraseña.equalsIgnoreCase(contraseñaConfir)){
-                    Data datos = new Data.Builder().putString("nombre",nombre).build();
+        if(permisonCheck()) {
+            if (!nombre.equalsIgnoreCase("") && !contraseña.equalsIgnoreCase("")) {
+                if (contraseña.equalsIgnoreCase(contraseñaConfir)) {
+                    Data datos = new Data.Builder().putString("nombre", nombre).build();
                     OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(GetWorker.class).setInputData(datos).build();
                     Double finalLongitud = longitudA;
                     Double finalLatitud = latitudA;
@@ -109,23 +111,23 @@ public class RegisterActivity extends AppCompatActivity {
                             .observe(this, new Observer<WorkInfo>() {
                                 @Override
                                 public void onChanged(WorkInfo workInfo) {
-                                    if(workInfo != null && workInfo.getState().isFinished()){
+                                    if (workInfo != null && workInfo.getState().isFinished()) {
                                         usuario = workInfo.getOutputData().getString("datos");
-                                        if(usuario.equalsIgnoreCase("[]")){
+                                        if (usuario.equalsIgnoreCase("[]")) {
                                             Data datos = new Data.Builder()
-                                                    .putString("nombre",nombre)
-                                                    .putString("contraseña",contraseña)
+                                                    .putString("nombre", nombre)
+                                                    .putString("contraseña", contraseña)
                                                     .putDouble("latitud", finalLatitud)
                                                     .putDouble("longitud", finalLongitud)
                                                     .build();
                                             OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(InsertWorker.class).setInputData(datos).build();
                                             WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
                                             finish();
-                                            Intent i = new Intent (getApplicationContext(), ImagenActivity.class);
-                                            i.putExtra("nombre",nombre);
+                                            Intent i = new Intent(getApplicationContext(), ImagenActivity.class);
+                                            i.putExtra("nombre", nombre);
                                             startActivity(i);
-                                        }else{
-                                            Toast toast= Toast.makeText(getApplicationContext(),"Usuario existente",Toast.LENGTH_SHORT);
+                                        } else {
+                                            Toast toast = Toast.makeText(getApplicationContext(), "Usuario existente", Toast.LENGTH_SHORT);
                                             toast.show();
                                         }
                                     }
@@ -133,12 +135,15 @@ public class RegisterActivity extends AppCompatActivity {
                             });
                     WorkManager.getInstance(this).enqueue(otwr);
 
-                }else {
+                } else {
                     this.hacerToast("Contraseñas diferentes");
                 }
-            }else{
+            } else {
                 this.hacerToast("Elementos vacios");
             }
+        } else{
+            finish();
+        }
         }
 
 
