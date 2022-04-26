@@ -8,6 +8,7 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,13 +46,12 @@ public class ActividadMapa extends FragmentActivity implements OnMapReadyCallbac
                             latitudes = latitudes.substring(1, latitudes.length()-1);
                             String[] arrLat = latitudes.split(", ");
                             String longitudes = workInfo.getOutputData().getString("datosLon");
-                            longitudes = longitudes.substring(1, latitudes.length()-1);
+                            longitudes = longitudes.substring(1, longitudes.length()-1);
                             String[] arrLon = longitudes.split(", ");
-                            for(int i =0; i<arrN.length;i++){
+                            for(int i =0; i<arrLat.length;i++){
                                 googleMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(Double.parseDouble(arrLat[i]), Double.parseDouble(arrLon[i])))
                                         .title(arrN[i]));
-
                             }
 
                         }

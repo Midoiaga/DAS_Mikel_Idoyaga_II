@@ -52,7 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
                             latitudA = location.getLatitude();
                             longitudA = location.getLongitude();
                         } else {
-                            hacerToast("Fallo con la ubicacion");
+                            hacerToast("Fallo con la ubicacion location");
                         }
                     }
                 })
